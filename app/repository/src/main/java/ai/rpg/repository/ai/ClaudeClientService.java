@@ -1,37 +1,34 @@
 package ai.rpg.repository.ai;
 
-import org.springframework.beans.factory.annotation.Value;
+import ai.rpg.repository.config.ClaudeProperties;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.http.MediaType;
 import reactor.core.publisher.Mono;
-import java.util.Map;
 
 @Service
 public class ClaudeClientService {
     private final WebClient webClient;
+    private final ClaudeProperties properties;
 
-    public ClaudeClientService(@Value("${claude.api.base-url:https://api.anthropic.com/v1}") String baseUrl,
-                              @Value("${claude.api.key}") String apiKey) {
-        this.webClient = WebClient.builder()
-                .baseUrl(baseUrl)
-                .defaultHeader("x-api-key", apiKey)
-                .defaultHeader("anthropic-version", "2023-06-01")
-                .build();
+    public ClaudeClientService(WebClient.Builder webClientBuilder, ClaudeProperties properties) {
+        this.properties = properties;
+        this.webClient = webClientBuilder
+            .baseUrl(properties.baseUrl())
+            .defaultHeader("x-api-key", properties.apiKey())
+            .defaultHeader("anthropic-version", "2023-06-01")
+            .build();
     }
 
-    public Mono<String> chatCompletion(String prompt) {
+    public Mono<String> getChatCompletion(String prompt) {
         return webClient.post()
-                .uri("/messages")
-                .contentType(MediaType.APPLICATION_JSON)
-                .bodyValue(Map.of(
-                        "model", "claude-3-opus-20240229",
-                        "max_tokens", 1024,
-                        "messages", new Object[]{
-                                Map.of("role", "user", "content", prompt)
-                        }
-                ))
-                .retrieve()
-                .bodyToMono(String.class);
+            .uri("/messages")
+            .bodyValue(new ChatRequest(prompt))
+            .retrieve()
+            .bodyToMono(ChatResponse.class)
+            .map(response -> response.content().get(0).text());
     }
+
+    private record ChatRequest(String prompt) {}
+    private record ChatResponse(java.util.List<Content> content) {}
+    private record Content(String text) {}
 } 

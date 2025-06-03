@@ -35,3 +35,6 @@ build
 # Ignore test application properties with secrets
 app/repository/src/test/resources/application-test.properties
 app/repository/src/test/resources/application-*.properties
+
+# Ignore all application.properties files
+**/application.properties
