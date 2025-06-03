@@ -30,6 +30,9 @@ This project aims to create an engaging JRPG experience where AI plays a crucial
    - Web: Spring WebMVC + WebFlux for reactive endpoints ✅
    - AI Integration: HTTP clients for Claude/OpenAI APIs ✅
    - Configuration: Spring Configuration Properties ✅
+     - Implemented AppConfig class for centralized configuration
+     - Updated services to use configuration properties
+     - Removed @Value annotations in favor of type-safe configuration
    - Monitoring: Spring Actuator + Micrometer ✅
 
 3. **Basic Domain Model** (In Progress)
