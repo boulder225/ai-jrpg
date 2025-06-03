@@ -28,3 +28,6 @@ build/
 
 # Ignore Gradle build output directory
 build
+
+# Ignore JAR files
+*.jar
