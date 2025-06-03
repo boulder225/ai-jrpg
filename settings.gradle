@@ -12,3 +12,6 @@ plugins {
 
 rootProject.name = 'ai-rpg-mvp'
 include 'app'
+include 'app:api'
+include 'app:service'
+include 'app:repository'
