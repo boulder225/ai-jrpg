@@ -1,0 +1,22 @@
+# Server Configuration
+server.port=8081
+
+# Database Configuration
+spring.datasource.url=jdbc:h2:mem:testdb
+spring.datasource.driverClassName=org.h2.Driver
+spring.datasource.username=sa
+spring.datasource.password=
+spring.jpa.database-platform=org.hibernate.dialect.H2Dialect
+spring.h2.console.enabled=true
+
+# Redis Configuration
+spring.data.redis.host=localhost
+spring.data.redis.port=6379
+
+# Claude API Configuration
+claude.api.base-url=https://api.anthropic.com/v1
+claude.api.key=dummy-key
+
+# OpenAI API Configuration
+openai.api.base-url=https://api.openai.com/v1
+openai.api.key=dummy-key 
