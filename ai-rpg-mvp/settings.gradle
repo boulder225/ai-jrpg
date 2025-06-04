@@ -1,7 +1,16 @@
 rootProject.name = 'ai-rpg-mvp'
 
 include 'ai-rpg-core'
-include 'ai-rpg-context'  
+include 'ai-rpg-persistence'
+include 'ai-rpg-context'
 include 'ai-rpg-ai'
 include 'ai-rpg-web'
 include 'ai-rpg-app'
+
+// Project descriptions
+project(':ai-rpg-core').projectDir = file('ai-rpg-core')
+project(':ai-rpg-persistence').projectDir = file('ai-rpg-persistence')
+project(':ai-rpg-context').projectDir = file('ai-rpg-context')
+project(':ai-rpg-ai').projectDir = file('ai-rpg-ai')
+project(':ai-rpg-web').projectDir = file('ai-rpg-web')
+project(':ai-rpg-app').projectDir = file('ai-rpg-app')

@@ -1,0 +1,24 @@
+plugins {
+    id 'java-library'
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+}
+
+dependencies {
+    api 'jakarta.validation:jakarta.validation-api:3.0.2'
+    
+    // For domain validation and utilities
+    implementation 'org.apache.commons:commons-lang3:3.13.0'
+    
+    // Testing
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.10.1'
+    testImplementation 'org.assertj:assertj-core:3.24.2'
+}
+
+test {
+    useJUnitPlatform()
+}
