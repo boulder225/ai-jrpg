@@ -5,12 +5,17 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import org.springframework.test.context.TestPropertySource;
 
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
+@TestPropertySource(properties = {
+    "spring.flyway.enabled=false",
+    "spring.jpa.hibernate.ddl-auto=create-drop"
+})
 class PlayerContextRepositoryTest {
 
     @Autowired
@@ -22,16 +27,12 @@ class PlayerContextRepositoryTest {
     @Test
     void whenSave_thenReturnSavedPlayerContext() {
         // given
-        PlayerContextEntity entity = new PlayerContextEntity();
-        entity.setPlayerId(1L);
-        entity.setPlayerName("TestPlayer");
-        entity.setLevel(1);
-        entity.setExperience(0);
-        entity.setHealth(100);
-        entity.setMana(50);
-        entity.setLocation("Test Location");
-        entity.setCurrentQuest("Test Quest");
-        entity.setGameState("Test State");
+        PlayerContextEntity entity = new PlayerContextEntity("player1", "session1");
+        entity.getCharacter().setName("TestPlayer");
+        entity.getCharacter().setHealthCurrent(100);
+        entity.getCharacter().setHealthMax(100);
+        entity.getCharacter().setReputation(10);
+        entity.getLocation().setCurrent("Test Location");
 
         // when
         PlayerContextEntity savedEntity = playerContextRepository.save(entity);
@@ -39,84 +40,77 @@ class PlayerContextRepositoryTest {
         // then
         assertThat(savedEntity).isNotNull();
         assertThat(savedEntity.getId()).isNotNull();
-        assertThat(savedEntity.getPlayerId()).isEqualTo(1L);
-        assertThat(savedEntity.getPlayerName()).isEqualTo("TestPlayer");
-        assertThat(savedEntity.getLevel()).isEqualTo(1);
-        assertThat(savedEntity.getLocation()).isEqualTo("Test Location");
-        assertThat(savedEntity.getCurrentQuest()).isEqualTo("Test Quest");
-        assertThat(savedEntity.getGameState()).isEqualTo("Test State");
+        assertThat(savedEntity.getPlayerId()).isEqualTo("player1");
+        assertThat(savedEntity.getSessionId()).isEqualTo("session1");
+        assertThat(savedEntity.getCharacter().getName()).isEqualTo("TestPlayer");
+        assertThat(savedEntity.getCharacter().getHealthCurrent()).isEqualTo(100);
+        assertThat(savedEntity.getCharacter().getHealthMax()).isEqualTo(100);
+        assertThat(savedEntity.getCharacter().getReputation()).isEqualTo(10);
+        assertThat(savedEntity.getLocation().getCurrent()).isEqualTo("Test Location");
     }
 
     @Test
     void whenFindByPlayerId_thenReturnPlayerContext() {
         // given
-        PlayerContextEntity entity = new PlayerContextEntity();
-        entity.setPlayerId(1L);
-        entity.setPlayerName("TestPlayer");
-        entity.setLevel(1);
-        entity.setExperience(0);
-        entity.setHealth(100);
-        entity.setMana(50);
-        entity.setLocation("Test Location");
-        entity.setCurrentQuest("Test Quest");
-        entity.setGameState("Test State");
+        PlayerContextEntity entity = new PlayerContextEntity("player1", "session1");
+        entity.getCharacter().setName("TestPlayer");
+        entity.getCharacter().setHealthCurrent(100);
+        entity.getCharacter().setHealthMax(100);
+        entity.getCharacter().setReputation(10);
+        entity.getLocation().setCurrent("Test Location");
         entityManager.persist(entity);
         entityManager.flush();
 
         // when
-        Optional<PlayerContextEntity> foundEntity = playerContextRepository.findByPlayerId(1L);
+        Optional<PlayerContextEntity> foundEntity = playerContextRepository.findByPlayerId("player1");
 
         // then
         assertThat(foundEntity).isPresent();
-        assertThat(foundEntity.get().getPlayerId()).isEqualTo(1L);
-        assertThat(foundEntity.get().getPlayerName()).isEqualTo("TestPlayer");
-        assertThat(foundEntity.get().getLevel()).isEqualTo(1);
-        assertThat(foundEntity.get().getLocation()).isEqualTo("Test Location");
-        assertThat(foundEntity.get().getCurrentQuest()).isEqualTo("Test Quest");
-        assertThat(foundEntity.get().getGameState()).isEqualTo("Test State");
+        assertThat(foundEntity.get().getPlayerId()).isEqualTo("player1");
+        assertThat(foundEntity.get().getSessionId()).isEqualTo("session1");
+        assertThat(foundEntity.get().getCharacter().getName()).isEqualTo("TestPlayer");
+        assertThat(foundEntity.get().getCharacter().getHealthCurrent()).isEqualTo(100);
+        assertThat(foundEntity.get().getCharacter().getHealthMax()).isEqualTo(100);
+        assertThat(foundEntity.get().getCharacter().getReputation()).isEqualTo(10);
+        assertThat(foundEntity.get().getLocation().getCurrent()).isEqualTo("Test Location");
     }
 
     @Test
     void whenUpdate_thenReturnUpdatedPlayerContext() {
         // given
-        PlayerContextEntity entity = new PlayerContextEntity();
-        entity.setPlayerId(1L);
-        entity.setPlayerName("TestPlayer");
-        entity.setLevel(1);
-        entity.setExperience(0);
-        entity.setHealth(100);
-        entity.setMana(50);
+        PlayerContextEntity entity = new PlayerContextEntity("player1", "session1");
+        entity.getCharacter().setName("TestPlayer");
+        entity.getCharacter().setHealthCurrent(100);
+        entity.getCharacter().setHealthMax(100);
+        entity.getCharacter().setReputation(10);
         entityManager.persist(entity);
         entityManager.flush();
 
         // when
-        entity.setPlayerName("UpdatedPlayer");
-        entity.setLevel(2);
-        entity.setExperience(100);
-        entity.setHealth(150);
-        entity.setMana(75);
+        entity.getCharacter().setName("UpdatedPlayer");
+        entity.getCharacter().setHealthCurrent(150);
+        entity.getCharacter().setHealthMax(200);
+        entity.getCharacter().setReputation(20);
         PlayerContextEntity savedEntity = playerContextRepository.save(entity);
 
         // then
         assertThat(savedEntity).isNotNull();
-        assertThat(savedEntity.getPlayerId()).isEqualTo(1L);
-        assertThat(savedEntity.getPlayerName()).isEqualTo("UpdatedPlayer");
-        assertThat(savedEntity.getLevel()).isEqualTo(2);
-        assertThat(savedEntity.getExperience()).isEqualTo(100);
-        assertThat(savedEntity.getHealth()).isEqualTo(150);
-        assertThat(savedEntity.getMana()).isEqualTo(75);
+        assertThat(savedEntity.getPlayerId()).isEqualTo("player1");
+        assertThat(savedEntity.getSessionId()).isEqualTo("session1");
+        assertThat(savedEntity.getCharacter().getName()).isEqualTo("UpdatedPlayer");
+        assertThat(savedEntity.getCharacter().getHealthCurrent()).isEqualTo(150);
+        assertThat(savedEntity.getCharacter().getHealthMax()).isEqualTo(200);
+        assertThat(savedEntity.getCharacter().getReputation()).isEqualTo(20);
     }
 
     @Test
     void whenDelete_thenPlayerContextShouldNotExist() {
         // given
-        PlayerContextEntity entity = new PlayerContextEntity();
-        entity.setPlayerId(1L);
-        entity.setPlayerName("TestPlayer");
-        entity.setLevel(1);
-        entity.setExperience(0);
-        entity.setHealth(100);
-        entity.setMana(50);
+        PlayerContextEntity entity = new PlayerContextEntity("player1", "session1");
+        entity.getCharacter().setName("TestPlayer");
+        entity.getCharacter().setHealthCurrent(100);
+        entity.getCharacter().setHealthMax(100);
+        entity.getCharacter().setReputation(10);
         entityManager.persist(entity);
         entityManager.flush();
 

@@ -8,8 +8,5 @@ import org.mapstruct.Mapper;
 public interface EntityMapper {
     // If you need to map between different types, define those methods here.
     // For now, just provide identity mappings as placeholders.
-    ActionEventEntity toEntity(ActionEventEntity entity);
-    ActionEventEntity toDomain(ActionEventEntity entity);
-    PlayerContextEntity toEntity(PlayerContextEntity entity);
-    PlayerContextEntity toDomain(PlayerContextEntity entity);
+    // All ambiguous identity mapping methods removed.
 } 
